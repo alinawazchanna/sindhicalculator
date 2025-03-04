@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="sd" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سنڌي ڪيلڪوليٽر</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans Sindhi', Arial, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .calculator {
+            background: rgba(255, 255, 255, 0.95);
+            width: 320px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        #display {
+            width: 100%;
+            height: 80px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+            text-align: left;
+            padding: 15px;
+            border: none;
+            direction: ltr;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            padding: 20px;
+            font-size: 1.5em;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #34495e;
+            color: white;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: #2c3e50;
+        }
+
+        .operator {
+            background: #e67e22;
+        }
+
+        .equals {
+            background: #27ae60;
+        }
+
+        .clear {
+            background: #c0392b;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            font-size: 14px;
+            padding: 10px;
+            font-family: 'Noto Sans Sindhi';
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <input type="text" id="display" readonly>
+        <div class="buttons">
+            <button class="clear" onclick="clearDisplay()">صاف</button>
+            <button class="operator" onclick="appendOperator('÷')">÷</button>
+            <button class="operator" onclick="appendOperator('×')">×</button>
+            <button class="operator" onclick="appendOperator('-')">-</button>
+            
+            <button onclick="appendNumber('۷')">۷</button>
+            <button onclick="appendNumber('۸')">۸</button>
+            <button onclick="appendNumber('۹')">۹</button>
+            <button class="operator" onclick="appendOperator('+')">+</button>
+            
+            <button onclick="appendNumber('۴')">۴</button>
+            <button onclick="appendNumber('۵')">۵</button>
+            <button onclick="appendNumber('۶')">۶</button>
+            <button onclick="appendNumber('.')">.</button>
+            
+            <button onclick="appendNumber('۱')">۱</button>
+            <button onclick="appendNumber('۲')">۲</button>
+            <button onclick="appendNumber('۳')">۳</button>
+            <button class="equals" onclick="calculate()">=</button>
+            
+            <button onclick="appendNumber('۰')">۰</button>
+            <button onclick="toggleSign()">±</button>
+            <button onclick="appendNumber('۰۰')">۰۰</button>
+            <button onclick="appendNumber('%')">%</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        ھي ڪلڪيوليٽر علي نواز چنا پاران تيار ڪيو ويو آهي<br>03007036614
+    </div>
+
+    <script>
+        const sindhiNumbers = {
+            '۰': '0', '۱': '1', '۲': '2', '۳': '3',
+            '۴': '4', '۵': '5', '۶': '6', 
+            '۷': '7', '۸': '8', '۹': '9'
+        };
+
+        function convertToEnglish(num) {
+            return num.split('').map(char => sindhiNumbers[char] || char).join('');
+        }
+
+        function convertToSindhi(num) {
+            return num.toString().split('').map(char => {
+                const key = Object.keys(sindhiNumbers).find(k => sindhiNumbers[k] === char);
+                return key || char;
+            }).join('');
+        }
+
+        function appendNumber(num) {
+            const display = document.getElementById('display');
+            display.value += num;
+        }
+
+        function appendOperator(operator) {
+            const display = document.getElementById('display');
+            display.value += ` ${operator} `;
+        }
+
+        function clearDisplay() {
+            document.getElementById('display').value = '';
+        }
+
+        function toggleSign() {
+            const display = document.getElementById('display');
+            display.value = display.value.startsWith('-') ? 
+                display.value.slice(1) : 
+                `-${display.value}`;
+        }
+
+        function calculate() {
+            try {
+                const display = document.getElementById('display');
+                let expression = convertToEnglish(display.value)
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/');
+                
+                let result = eval(expression);
+                display.value = convertToSindhi(result.toString());
+            } catch (error) {
+                display.value = 'غلطي';
+            }
+        }
+    </script>
+</body>
+</html>
