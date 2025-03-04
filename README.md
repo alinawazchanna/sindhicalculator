@@ -1,1 +1,0 @@
-# sindhicalculator.github.io
